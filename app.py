@@ -42,6 +42,10 @@ else:
     portrait_html = '<div class="disc">TA</div>'
     bg_html = ''
 
+# NOTE: The share-menu CSS now lives INSIDE the iframe HTML (below),
+# because styles in st.markdown can't reach elements inside the iframe.
+# The iframe itself is made fixed + full-screen so the floating menu
+# sits at the bottom-right corner of the real browser window.
 st.markdown(
     """
     <style>
@@ -49,67 +53,19 @@ st.markdown(
     .stApp, [data-testid="stAppViewContainer"], .main {background: #0C0C0C !important;}
     .block-container {padding: 0 !important; max-width: 100% !important;}
     iframe {border: 0 !important; display: block;}
-    
-/* CIRCULAR SOCIAL SHARE MENU */
-.share-menu {
-  position: fixed; right: 24px; bottom: 28px; z-index: 9999;
-  width: 280px; height: 280px; border-radius: 50%;
-  pointer-events: none;
-}
-.share-menu .share-toggle,
-.share-menu .share-item {
-  position: absolute; display: flex; align-items: center; justify-content: center;
-  border: 0; border-radius: 50%; cursor: pointer; text-decoration: none;
-  box-shadow: 0 5px 18px rgba(0,0,0,.28);
-  transition: transform .35s cubic-bezier(.2,.8,.2,1), opacity .25s, box-shadow .25s;
-}
-.share-menu .share-toggle {
-  width: 62px; height: 62px; left: 109px; top: 109px;
-  background: linear-gradient(135deg, #B600A8, #7621B0);
-  color: #fff; font-size: 25px; z-index: 3; pointer-events: auto;
-  box-shadow: 0 0 0 5px rgba(255,255,255,.12), 0 8px 24px rgba(182,0,168,.35);
-}
-.share-menu .share-item {
-  width: 50px; height: 50px; left: 115px; top: 115px;
-  background: #fff; color: #242331; font-size: 23px;
-  opacity: 0; transform: translate(0,0) scale(.25); pointer-events: none;
-}
-.share-menu.active .share-item { opacity: 1; pointer-events: auto; }
-.share-menu.active .share-item:hover { box-shadow: 0 8px 22px rgba(0,0,0,.38); }
-.share-menu.active .share-toggle { transform: rotate(45deg); }
-.share-menu .wa { color: #25D366; }
-.share-menu .xbrand { color: #111; }
-.share-menu .reddit { color: #FF4500; }
-.share-menu .facebook { color: #1877F2; }
-.share-menu .linkedin { color: #0A66C2; }
-.share-menu .youtube { color: #FF0033; }
-.share-menu .instagram { color: #C13584; }
-.share-menu .github { color: #171515; }
-.share-menu.active .item-1 { transform: translate(0,-112px) scale(1); }
-.share-menu.active .item-2 { transform: translate(79px,-79px) scale(1); }
-.share-menu.active .item-3 { transform: translate(112px,0) scale(1); }
-.share-menu.active .item-4 { transform: translate(79px,79px) scale(1); }
-.share-menu.active .item-5 { transform: translate(0,112px) scale(1); }
-.share-menu.active .item-6 { transform: translate(-79px,79px) scale(1); }
-.share-menu.active .item-7 { transform: translate(-112px,0) scale(1); }
-.share-menu.active .item-8 { transform: translate(-79px,-79px) scale(1); }
-.share-toast {
-  position: fixed; right: 24px; bottom: 320px; z-index: 10000;
-  padding: 10px 16px; border: 1px solid rgba(255,255,255,.18);
-  border-radius: 999px; color: #fff; background: #242331;
-  font-size: 13px; opacity: 0; transform: translateY(8px);
-  pointer-events: none; transition: .25s;
-}
-.share-toast.show { opacity: 1; transform: translateY(0); }
-@media (max-width: 480px) {
-  .share-menu { right: 12px; bottom: 16px; transform: scale(.88); transform-origin: bottom right; }
-  .share-toast { right: 12px; bottom: 285px; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .share-menu *, .share-toast { transition: none !important; }
-}
 
-</style>
+    /* Make the portfolio iframe fill the whole screen so that
+       position:fixed elements inside it float on the real viewport */
+    iframe[title="streamlit.components.v1.html"],
+    div[data-testid="stCustomComponentV1"] iframe,
+    div[data-testid="stIFrame"] iframe {
+        position: fixed !important;
+        top: 0; left: 0;
+        width: 100vw !important;
+        height: 100vh !important;
+        z-index: 1;
+    }
+    </style>
     """,
     unsafe_allow_html=True,
 )
@@ -544,6 +500,65 @@ a.ccard:hover { border-color: #BBCCD7; background: #1a1b22; transform: translate
 .hint { font-size: 12px; opacity: .55; margin-top: 14px; text-align: center; text-transform: uppercase; letter-spacing: .08em; }
 
 .foot { margin-top: 64px; font-size: 13px; opacity: .5; text-transform: uppercase; letter-spacing: .1em; text-align: center; }
+
+/* ================= CIRCULAR SOCIAL SHARE MENU (floating) ================= */
+.share-menu {
+  position: fixed; right: 24px; bottom: 28px; z-index: 9999;
+  width: 280px; height: 280px; border-radius: 50%;
+  pointer-events: none;
+}
+.share-menu .share-toggle,
+.share-menu .share-item {
+  position: absolute; display: flex; align-items: center; justify-content: center;
+  border: 0; border-radius: 50%; cursor: pointer; text-decoration: none;
+  box-shadow: 0 5px 18px rgba(0,0,0,.28);
+  transition: transform .35s cubic-bezier(.2,.8,.2,1), opacity .25s, box-shadow .25s;
+}
+.share-menu .share-toggle {
+  width: 62px; height: 62px; left: 109px; top: 109px;
+  background: linear-gradient(135deg, #B600A8, #7621B0);
+  color: #fff; font-size: 25px; z-index: 3; pointer-events: auto;
+  box-shadow: 0 0 0 5px rgba(255,255,255,.12), 0 8px 24px rgba(182,0,168,.35);
+}
+.share-menu .share-item {
+  width: 50px; height: 50px; left: 115px; top: 115px;
+  background: #fff; color: #242331; font-size: 23px;
+  opacity: 0; transform: translate(0,0) scale(.25); pointer-events: none;
+}
+.share-menu.active .share-item { opacity: 1; pointer-events: auto; }
+.share-menu.active .share-item:hover { box-shadow: 0 8px 22px rgba(0,0,0,.38); }
+.share-menu.active .share-toggle { transform: rotate(45deg); }
+.share-menu .wa { color: #25D366; }
+.share-menu .xbrand { color: #111; }
+.share-menu .reddit { color: #FF4500; }
+.share-menu .facebook { color: #1877F2; }
+.share-menu .linkedin { color: #0A66C2; }
+.share-menu .youtube { color: #FF0033; }
+.share-menu .instagram { color: #C13584; }
+.share-menu .github { color: #171515; }
+.share-menu.active .item-1 { transform: translate(0,-112px) scale(1); }
+.share-menu.active .item-2 { transform: translate(79px,-79px) scale(1); }
+.share-menu.active .item-3 { transform: translate(112px,0) scale(1); }
+.share-menu.active .item-4 { transform: translate(79px,79px) scale(1); }
+.share-menu.active .item-5 { transform: translate(0,112px) scale(1); }
+.share-menu.active .item-6 { transform: translate(-79px,79px) scale(1); }
+.share-menu.active .item-7 { transform: translate(-112px,0) scale(1); }
+.share-menu.active .item-8 { transform: translate(-79px,-79px) scale(1); }
+.share-toast {
+  position: fixed; right: 24px; bottom: 320px; z-index: 10000;
+  padding: 10px 16px; border: 1px solid rgba(255,255,255,.18);
+  border-radius: 999px; color: #fff; background: #242331;
+  font-size: 13px; opacity: 0; transform: translateY(8px);
+  pointer-events: none; transition: .25s;
+}
+.share-toast.show { opacity: 1; transform: translateY(0); }
+@media (max-width: 480px) {
+  .share-menu { right: 12px; bottom: 16px; transform: scale(.88); transform-origin: bottom right; }
+  .share-toast { right: 12px; bottom: 285px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .share-menu *, .share-toast { transition: none !important; }
+}
 </style>
 </head>
 <body>
@@ -858,6 +873,7 @@ window.addEventListener('resize', fitAll);
 fitAll();
 
 document.querySelectorAll('[data-go]').forEach(el => {
+  if (el.closest('#shareMenu')) return;
   el.addEventListener('click', e => {
     e.preventDefault();
     const target = document.getElementById(el.dataset.go);
@@ -1187,18 +1203,33 @@ loop();
   const toast = document.getElementById('shareToast');
   if (!menu || !toggle) return;
 
-  const pageUrl = () => window.location.href.split('#')[0];
+  // Inside Streamlit the page lives in an iframe (about:srcdoc),
+  // so grab the real parent URL when possible.
+  const pageUrl = () => {
+    let u = '';
+    try { u = window.parent.location.href; } catch (e) {}
+    if (!u || u.startsWith('about:')) u = document.referrer || '';
+    if (!u || u.startsWith('about:')) u = window.location.href;
+    return u.split('#')[0];
+  };
   const shareText = 'Check out my portfolio – Tamizh Azhagan';
+
+  function closeMenu() {
+    menu.classList.remove('active');
+    toggle.setAttribute('aria-expanded', 'false');
+    toggle.setAttribute('aria-label', 'Open social share menu');
+  }
 
   function showToast(message) {
     if (!toast) return;
     toast.textContent = message;
     toast.classList.add('show');
     window.clearTimeout(showToast.timer);
-    showToast.timer = window.setTimeout(() => toast.classList.remove('show'), 2200);
+    showToast.timer = window.setTimeout(() => toast.classList.remove('show'), 2400);
   }
 
-  toggle.addEventListener('click', () => {
+  toggle.addEventListener('click', e => {
+    e.stopPropagation();
     const isOpen = menu.classList.toggle('active');
     toggle.setAttribute('aria-expanded', String(isOpen));
     toggle.setAttribute('aria-label', isOpen ? 'Close social share menu' : 'Open social share menu');
@@ -1206,6 +1237,8 @@ loop();
 
   menu.querySelectorAll('[data-share]').forEach(item => {
     item.addEventListener('click', async event => {
+      event.preventDefault();
+      event.stopPropagation();
       const service = item.dataset.share;
       const url = pageUrl();
       const encodedUrl = encodeURIComponent(url);
@@ -1220,14 +1253,17 @@ loop();
       };
 
       if (shareUrls[service]) {
-        event.preventDefault();
         window.open(shareUrls[service], '_blank', 'noopener,noreferrer');
       } else if (service === 'copy') {
-        event.preventDefault();
         try {
           if (navigator.clipboard && window.isSecureContext) {
             await navigator.clipboard.writeText(url);
           } else {
+            throw new Error('clipboard unavailable');
+          }
+          showToast('Portfolio link copied! Paste it into Instagram, YouTube or anywhere.');
+        } catch (error) {
+          try {
             const field = document.createElement('textarea');
             field.value = url;
             field.style.position = 'fixed';
@@ -1236,33 +1272,22 @@ loop();
             field.select();
             document.execCommand('copy');
             field.remove();
+            showToast('Portfolio link copied! Paste it into Instagram, YouTube or anywhere.');
+          } catch (err2) {
+            showToast('Copy the portfolio URL from your browser address bar.');
           }
-          showToast('Portfolio link copied! Paste it into Instagram, YouTube or anywhere.');
-        } catch (error) {
-          showToast('Copy the portfolio URL from your browser address bar.');
         }
       }
-
-      menu.classList.remove('active');
-      toggle.setAttribute('aria-expanded', 'false');
-      toggle.setAttribute('aria-label', 'Open social share menu');
+      closeMenu();
     });
   });
 
   document.addEventListener('click', event => {
-    if (!menu.contains(event.target)) {
-      menu.classList.remove('active');
-      toggle.setAttribute('aria-expanded', 'false');
-      toggle.setAttribute('aria-label', 'Open social share menu');
-    }
+    if (!menu.contains(event.target)) closeMenu();
   });
 
   document.addEventListener('keydown', event => {
-    if (event.key === 'Escape') {
-      menu.classList.remove('active');
-      toggle.setAttribute('aria-expanded', 'false');
-      toggle.setAttribute('aria-label', 'Open social share menu');
-    }
+    if (event.key === 'Escape') closeMenu();
   });
 })();
 
