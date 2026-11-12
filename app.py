@@ -49,7 +49,67 @@ st.markdown(
     .stApp, [data-testid="stAppViewContainer"], .main {background: #0C0C0C !important;}
     .block-container {padding: 0 !important; max-width: 100% !important;}
     iframe {border: 0 !important; display: block;}
-    </style>
+    
+/* CIRCULAR SOCIAL SHARE MENU */
+.share-menu {
+  position: fixed; right: 24px; bottom: 28px; z-index: 9999;
+  width: 280px; height: 280px; border-radius: 50%;
+  pointer-events: none;
+}
+.share-menu .share-toggle,
+.share-menu .share-item {
+  position: absolute; display: flex; align-items: center; justify-content: center;
+  border: 0; border-radius: 50%; cursor: pointer; text-decoration: none;
+  box-shadow: 0 5px 18px rgba(0,0,0,.28);
+  transition: transform .35s cubic-bezier(.2,.8,.2,1), opacity .25s, box-shadow .25s;
+}
+.share-menu .share-toggle {
+  width: 62px; height: 62px; left: 109px; top: 109px;
+  background: linear-gradient(135deg, #B600A8, #7621B0);
+  color: #fff; font-size: 25px; z-index: 3; pointer-events: auto;
+  box-shadow: 0 0 0 5px rgba(255,255,255,.12), 0 8px 24px rgba(182,0,168,.35);
+}
+.share-menu .share-item {
+  width: 50px; height: 50px; left: 115px; top: 115px;
+  background: #fff; color: #242331; font-size: 23px;
+  opacity: 0; transform: translate(0,0) scale(.25); pointer-events: none;
+}
+.share-menu.active .share-item { opacity: 1; pointer-events: auto; }
+.share-menu.active .share-item:hover { box-shadow: 0 8px 22px rgba(0,0,0,.38); }
+.share-menu.active .share-toggle { transform: rotate(45deg); }
+.share-menu .wa { color: #25D366; }
+.share-menu .xbrand { color: #111; }
+.share-menu .reddit { color: #FF4500; }
+.share-menu .facebook { color: #1877F2; }
+.share-menu .linkedin { color: #0A66C2; }
+.share-menu .youtube { color: #FF0033; }
+.share-menu .instagram { color: #C13584; }
+.share-menu .github { color: #171515; }
+.share-menu.active .item-1 { transform: translate(0,-112px) scale(1); }
+.share-menu.active .item-2 { transform: translate(79px,-79px) scale(1); }
+.share-menu.active .item-3 { transform: translate(112px,0) scale(1); }
+.share-menu.active .item-4 { transform: translate(79px,79px) scale(1); }
+.share-menu.active .item-5 { transform: translate(0,112px) scale(1); }
+.share-menu.active .item-6 { transform: translate(-79px,79px) scale(1); }
+.share-menu.active .item-7 { transform: translate(-112px,0) scale(1); }
+.share-menu.active .item-8 { transform: translate(-79px,-79px) scale(1); }
+.share-toast {
+  position: fixed; right: 24px; bottom: 320px; z-index: 10000;
+  padding: 10px 16px; border: 1px solid rgba(255,255,255,.18);
+  border-radius: 999px; color: #fff; background: #242331;
+  font-size: 13px; opacity: 0; transform: translateY(8px);
+  pointer-events: none; transition: .25s;
+}
+.share-toast.show { opacity: 1; transform: translateY(0); }
+@media (max-width: 480px) {
+  .share-menu { right: 12px; bottom: 16px; transform: scale(.88); transform-origin: bottom right; }
+  .share-toast { right: 12px; bottom: 285px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .share-menu *, .share-toast { transition: none !important; }
+}
+
+</style>
     """,
     unsafe_allow_html=True,
 )
@@ -62,6 +122,7 @@ HTML = """
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Tamizh Azhagan -- Full-Stack Developer</title>
 <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { background: #0C0C0C; overflow-x: hidden; }
@@ -638,6 +699,21 @@ a.ccard:hover { border-color: #BBCCD7; background: #1a1b22; transform: translate
 
 </div>
 
+
+<!-- CIRCULAR SOCIAL SHARE MENU -->
+<div class="share-menu" id="shareMenu" aria-label="Social sharing menu">
+  <a class="share-item item-1 wa" href="#" data-share="whatsapp" aria-label="Share on WhatsApp" title="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+  <a class="share-item item-2 xbrand" href="#" data-share="x" aria-label="Share on X" title="X"><i class="fa-brands fa-x-twitter"></i></a>
+  <a class="share-item item-3 reddit" href="#" data-share="reddit" aria-label="Share on Reddit" title="Reddit"><i class="fa-brands fa-reddit-alien"></i></a>
+  <a class="share-item item-4 linkedin" href="#" data-share="linkedin" aria-label="Share on LinkedIn" title="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+  <button class="share-item item-5 github" type="button" data-share="copy" aria-label="Copy portfolio link" title="Copy link"><i class="fa-brands fa-github"></i></button>
+  <button class="share-item item-6 instagram" type="button" data-share="copy" aria-label="Copy link for Instagram" title="Instagram – copy link"><i class="fa-brands fa-instagram"></i></button>
+  <button class="share-item item-7 youtube" type="button" data-share="copy" aria-label="Copy link for YouTube" title="YouTube – copy link"><i class="fa-brands fa-youtube"></i></button>
+  <a class="share-item item-8 facebook" href="#" data-share="facebook" aria-label="Share on Facebook" title="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+  <button class="share-toggle" id="shareToggle" type="button" aria-label="Open social share menu" aria-expanded="false" title="Share"><i class="fa-solid fa-share-nodes"></i></button>
+</div>
+<div class="share-toast" id="shareToast" role="status" aria-live="polite">Portfolio link copied!</div>
+
 <script>
 const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
 
@@ -1103,6 +1179,93 @@ cv.addEventListener('pointerdown', e => { e.preventDefault(); jump(); });
 window.addEventListener('resize', resize);
 resize();
 loop();
+
+/* ================= CIRCULAR SOCIAL SHARE MENU ================= */
+(function initShareMenu() {
+  const menu = document.getElementById('shareMenu');
+  const toggle = document.getElementById('shareToggle');
+  const toast = document.getElementById('shareToast');
+  if (!menu || !toggle) return;
+
+  const pageUrl = () => window.location.href.split('#')[0];
+  const shareText = 'Check out my portfolio – Tamizh Azhagan';
+
+  function showToast(message) {
+    if (!toast) return;
+    toast.textContent = message;
+    toast.classList.add('show');
+    window.clearTimeout(showToast.timer);
+    showToast.timer = window.setTimeout(() => toast.classList.remove('show'), 2200);
+  }
+
+  toggle.addEventListener('click', () => {
+    const isOpen = menu.classList.toggle('active');
+    toggle.setAttribute('aria-expanded', String(isOpen));
+    toggle.setAttribute('aria-label', isOpen ? 'Close social share menu' : 'Open social share menu');
+  });
+
+  menu.querySelectorAll('[data-share]').forEach(item => {
+    item.addEventListener('click', async event => {
+      const service = item.dataset.share;
+      const url = pageUrl();
+      const encodedUrl = encodeURIComponent(url);
+      const encodedText = encodeURIComponent(shareText);
+
+      const shareUrls = {
+        whatsapp: `https://api.whatsapp.com/send?text=${encodedText}%20${encodedUrl}`,
+        x: `https://twitter.com/intent/tweet?text=${encodedText}&url=${encodedUrl}`,
+        reddit: `https://www.reddit.com/submit?url=${encodedUrl}&title=${encodedText}`,
+        facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`,
+        linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`
+      };
+
+      if (shareUrls[service]) {
+        event.preventDefault();
+        window.open(shareUrls[service], '_blank', 'noopener,noreferrer');
+      } else if (service === 'copy') {
+        event.preventDefault();
+        try {
+          if (navigator.clipboard && window.isSecureContext) {
+            await navigator.clipboard.writeText(url);
+          } else {
+            const field = document.createElement('textarea');
+            field.value = url;
+            field.style.position = 'fixed';
+            field.style.opacity = '0';
+            document.body.appendChild(field);
+            field.select();
+            document.execCommand('copy');
+            field.remove();
+          }
+          showToast('Portfolio link copied! Paste it into Instagram, YouTube or anywhere.');
+        } catch (error) {
+          showToast('Copy the portfolio URL from your browser address bar.');
+        }
+      }
+
+      menu.classList.remove('active');
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.setAttribute('aria-label', 'Open social share menu');
+    });
+  });
+
+  document.addEventListener('click', event => {
+    if (!menu.contains(event.target)) {
+      menu.classList.remove('active');
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.setAttribute('aria-label', 'Open social share menu');
+    }
+  });
+
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape') {
+      menu.classList.remove('active');
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.setAttribute('aria-label', 'Open social share menu');
+    }
+  });
+})();
+
 </script>
 </body>
 </html>
