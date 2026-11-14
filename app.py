@@ -10,7 +10,7 @@ GITHUB_URL = "https://github.com/Tamizh06-azhagan"
 EMAIL = "azhagantamizh47@gmail.com"
 PHONE = "+91 93609 52696"
 PHONE_LINK = "tel:+919360952696"
-RESUME_URL = "https://drive.google.com/file/d/10f8xmdLbX5Q69-pT8jKAi_S1g_fBiit6/view?usp=drive_link"
+RESUME_URL = "https://drive.google.com/file/d/1fPPbavxr35VJ2ThfDt5NZp0qNXM4-B-3/view?usp=sharing"
 
 FRAME_HEIGHT = 1000
 
